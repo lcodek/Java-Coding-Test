@@ -1,0 +1,87 @@
+To compile: 
+javac Good.java Receipt.java ReceiptItem.java SalesTaxDriver.java
+
+To run:
+java SalesTaxDriver <inputfile>
+
+If you run
+	java SalesTaxDriver input.txt
+then you should get the output of the original example.
+
+__________________________________________________________
+
+ORIGINAL PROBLEM: Sales Taxes
+ 
+Basic sales tax is applicable at a rate of 10% on all goods, except books, food, and medical products that are exempt. Import duty is an additional sales tax applicable on all imported goods at a rate of 5%, with no exemptions.
+ 
+When I purchase items I receive a receipt which lists the name of all the items and their price (including tax), finishing with the total cost of the items, and the total amounts of sales taxes paid.  The rounding rules for sales tax are that for a tax rate of n%, a shelf price of p contains (np/100 rounded up to the nearest 0.05) amount of sales tax.
+ 
+Write an application that prints out the receipt details for these shopping baskets...
+ 
+Input:
+ 
+Input 1:
+1 book at 12.49
+1 music CD at 14.99
+1 chocolate bar at 0.85
+ 
+Input 2:
+1 imported box of chocolates at 10.00
+1 imported bottle of perfume at 47.50
+ 
+Input 3:
+1 imported bottle of perfume at 27.99
+1 bottle of perfume at 18.99
+1 packet of headache pills at 9.75
+1 box of imported chocolates at 11.25
+ 
+Output:
+ 
+Output 1:
+1 book : 12.49
+1 music CD: 16.49
+1 chocolate bar: 0.85
+Sales Taxes: 1.50
+Total: 29.83
+ 
+Output 2:
+1 imported box of chocolates: 10.50
+1 imported bottle of perfume: 54.65
+Sales Taxes: 7.65
+Total: 65.15
+ 
+Output 3:
+1 imported bottle of perfume: 32.19
+1 bottle of perfume: 20.89
+1 packet of headache pills: 9.75
+1 imported box of chocolates: 11.85
+Sales Taxes: 6.70
+Total: 74.68
+==========
+
+__________________________________________________________
+
+CODE OVERVIEW: 
+SalesTaxDriver takes an input file of receipts (in the specified format) and outputs the receipts with the tax calculated. SalesTaxDriver constructs a list of Receipt objects as it parses the input file. 
+
+Receipt objects are constructed of a list of ReceiptItems as well as the total cost of items pretax and the total sales tax. The calculateTax method computes the total sales tax for all the ReceiptItems. The display method prints the receipt in the specified format.
+
+Each ReceiptItem holds a Good object, the number of goods, and the total price. The getTax method computes the tax on the ReceiptItem. The round method rounds the parameter to what is specified.
+
+Each Good object holds whether the good is exempt from basic sales tax and whether the good is imported or not.
+
+__________________________________________________________
+
+DESIGN:
+I pursued a modular design and tested incrementally with JUnit testing.
+
+I assumed that there would be an active user that could answer my queries. In order to keep track of what goods are exempt from basic sales tax, in SalesTaxDriver I prompt the user to tell me if the good falls under the specified categories. I add this information to either the exempt or not exempt hash set. At the end of the program, I save the hash sets to files so I can load them next time the program learns. Thus once a specific object (determined by the exact string name) has been categorized by the user, the program will remember its status for all subsequent calls. The code can be updated to allow for the toggling of these statuses.
+
+I chose to store money values as BigDecimal because using doubles to represent money causes a loss of precision and accuracy.
+
+__________________________________________________________
+
+IMPROVEMENTS:
+My next steps for this code would be to focus on error checking. I especially would like to focus on checking the text input to make sure it is in the correct format. 
+
+I would improve the representation of the goods exempt for basic sales tax. If an unimported object is already in the hash set, then I can update the program so that it won't ask the first time it comes across the imported version of the same object. I would also like to represent the goods exempt for basic sales tax in a more modular way. It could be helpful to have objects organized in different categories, with separate hash sets for books, food, and medical products. This would be useful in the case that one category might switched to having basic sales tax or if the user just wants access to all goods of a certain category.
